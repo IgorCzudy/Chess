@@ -44,6 +44,22 @@ public class Core {
     static public ArrayList<Pice> GetListOfPice(){
         return ListOfPice;
     }
+    public static Pice GetWhitePice(Point position){
+        for (Pice pice : ListOfPice) {
+            if (pice.getPosition().equals(position) && pice.color.equals(false)) {
+                return pice;
+            }
+        }
+        return null;
+    }
+    public static Pice GetBlackPice(Point position){
+        for (Pice pice : ListOfPice) {
+            if (pice.getPosition().equals(position) && pice.color.equals(true)) {
+                return pice;
+            }
+        }
+        return null;
+    }
 
     void makeListOfPice(){
         ListOfPice = new ArrayList<>();

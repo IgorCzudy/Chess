@@ -15,9 +15,7 @@ class Panel extends JPanel implements ActionListener {
 
     JButton[][] buttons;
     Map map;
-    boolean toMove = false;
-    Pice TachedPice;
-    Point pointToMove;
+
 
     Panel(){
         Map map = new Map();
@@ -95,54 +93,77 @@ class Panel extends JPanel implements ActionListener {
             }
         }
     }
+
+    boolean toMove = false;
+    Pice TachedPice;
+    Point pointToMove;
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        for (int i = 0; i<8; i++){
-            for (int j = 0; j<8; j++){
-                if (e.getSource()==buttons[i][j]){
+        int i=0,j=0;
 
-                    if (!toMove) {
-                        TachedPice = Core.GetPice(new Point(i, j));
-                    }
-                    else{
-                        pointToMove = new Point(i, j);
-                    }
-
-                    if(!toMove){
-                        if(TachedPice != null) {
-                            LightOn(TachedPice.listOfPossibleMoves());
-                            LightOnBeat(TachedPice.listOfPossibleBeat());
-                            toMove = true;
-                        }
-                        else{
-                            return;
-                        }
-                    }
-                    else{
-                           if (TachedPice.listOfPossibleMoves().contains(pointToMove)){
-                                //move pointToMove = new Point(i, j);
-
-                               buttons[TachedPice.getPosition().x][TachedPice.getPosition().y].setIcon(null);
-                               buttons[pointToMove.x][pointToMove.y].setIcon(Map.mapFunction(TachedPice.getColor(),TachedPice.getPice()));
-                               TachedPice.move(pointToMove);
-                               LightOff(TachedPice.listOfPossibleMoves());
-                               LightOff(TachedPice.listOfPossibleBeat());
-                               toMove=false;
-                            }
-                           else if(TachedPice.listOfPossibleBeat().contains(pointToMove)){
-                               //beat
-                               LightOff(TachedPice.listOfPossibleMoves());
-                               LightOff(TachedPice.listOfPossibleBeat());
-                               toMove=false;
-                           }
-                           else{
-                               LightOff(TachedPice.listOfPossibleMoves());
-                               LightOff(TachedPice.listOfPossibleBeat());
-                               toMove=false;
-                           }
+        for (int ii = 0; ii<8; ii++){
+            for (int jj = 0; jj<8; jj++) {
+                if (e.getSource()==buttons[ii][jj]){
+                        i = ii;
+                        j = jj;
                     }
                 }
             }
+
+
+        if (!toMove) {
+            TachedPice = Core.GetPice(new Point(i, j));
+        }
+        else{
+            pointToMove = new Point(i, j);
+        }
+
+        if(!toMove){
+            if(TachedPice != null) {
+                //podwświetl liste po prawidłowym kliknęciu
+                LightOn(TachedPice.listOfPossibleMoves());
+                LightOnBeat(TachedPice.listOfPossibleBeat());
+                toMove = true;
+            }
+            else{
+                // nie kliknął na pinek zwróć
+                return;
+            }
+        }
+        //drugie kliknięcie
+        else{
+                //
+               if (TachedPice.listOfPossibleMoves().contains(pointToMove)){
+                    //move pointToMove = new Point(i, j);
+                   //posunięcie i zgaszenie wszystkiego
+
+                   LightOff(TachedPice.listOfPossibleMoves());
+                   LightOff(TachedPice.listOfPossibleBeat());
+                   buttons[TachedPice.getPosition().x][TachedPice.getPosition().y].setIcon(null);
+                   buttons[pointToMove.x][pointToMove.y].setIcon(Map.mapFunction(TachedPice.getColor(),TachedPice.getPice()));
+                   TachedPice.move(pointToMove);
+                   toMove=false;
+                }
+               else if(TachedPice.listOfPossibleBeat().contains(pointToMove)){
+                   //beat
+                   //zbicie i zgaszenie wszystkiego
+
+                   LightOff(TachedPice.listOfPossibleMoves());
+                   LightOff(TachedPice.listOfPossibleBeat());
+                   buttons[TachedPice.getPosition().x][TachedPice.getPosition().y].setIcon(null);
+                   buttons[pointToMove.x][pointToMove.y].setIcon(Map.mapFunction(TachedPice.getColor(),TachedPice.getPice()));
+                   TachedPice.beat(pointToMove);
+
+                   toMove=false;
+               }
+               else{
+                   //złe kliknięcie zgaszenie wszystkiego
+                   LightOff(TachedPice.listOfPossibleMoves());
+                   LightOff(TachedPice.listOfPossibleBeat());
+                   toMove=false;
+               }
         }
     }
+
 }

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public abstract class Pice {
 
-    Boolean color; //black-1 white-0
+    Boolean color, wasMoved; //black-1 white-0
     Pices pice;
     Point position;
 
@@ -17,6 +17,7 @@ public abstract class Pice {
         this.color=color;
         this.pice=pice;
         this.position=position;
+        wasMoved = false;
         listOfPossibleBeat= new ArrayList<Point>();
         listOfPossibleMoves= new ArrayList<Point>();
     }
@@ -52,8 +53,12 @@ public abstract class Pice {
         }
     */
     public void move(Point point){
+        wasMoved = true;
         this.position = point;
     }
-    abstract void beat();
+    public void beat(Point position){
+        Core.GetListOfPice().remove(Core.GetPice(position));
+        this.position = position;
+    }
 
 }
