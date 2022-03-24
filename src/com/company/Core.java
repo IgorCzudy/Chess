@@ -1,11 +1,8 @@
 package com.company;
 
-import com.GUI.Map;
-
-import javax.swing.text.Position;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Core {
 
@@ -15,6 +12,7 @@ public class Core {
         makeListOfPice();
     }
 
+
     static public ArrayList<Point> ListOfAllCord(){
         ArrayList<Point> points = new ArrayList<Point>();
         for (Pice pice : ListOfPice){
@@ -22,16 +20,126 @@ public class Core {
         }
         return points;
     }
-
-    public static boolean IsAnyPicesHere(Point position){
-        for (int i = 0 ; i<ListOfPice.size();i++){
-            if (ListOfPice.get(i).getPosition().equals(position)){
-                return true;
+    static public ArrayList<Point> ListOfAllBlackCord(){
+        ArrayList<Point> points = new ArrayList<Point>();
+        for (Pice pice : ListOfPice){
+            if (pice.color){
+                for (Point point : pice.listOfPossibleMoves()){
+                    if (!points.contains(point)) points.add(point);
+                }
             }
         }
-    return false;
+        return points;
+    }
+    static public ArrayList<Point> ListOfAllWhiteCord(){
+        ArrayList<Point> points = new ArrayList<Point>();
+        for (Pice pice : ListOfPice){
+            if (!pice.color){
+                for (Point point : pice.listOfPossibleMoves()){
+                    if (!points.contains(point)) points.add(point);
+                }
+            }
+        }
+        return points;
     }
 
+    public static boolean IsWhiteMate(){
+        Pice blackKing = null;
+        ArrayList<Point> listOfPlaceAttactByWhitePice = new ArrayList<Point>();
+
+        for (Pice pice : ListOfPice) {
+            if (!pice.getColor() && pice.pice == Pices.KING) {
+                blackKing = pice;
+            }
+            if (pice.getColor()) {
+                listOfPlaceAttactByWhitePice.addAll(pice.listOfPossibleMoves());
+            }
+        }
+        assert blackKing != null;
+        int i = 0;
+        for (Point point : blackKing.listOfPossibleMoves()){
+            if (listOfPlaceAttactByWhitePice.contains(point)){
+                i++;
+            }
+        }
+        if (i!=blackKing.listOfPossibleMoves().size()) return false;
+        i = 0;
+        for (Point point : blackKing.listOfPossibleBeat()){
+            if (listOfPlaceAttactByWhitePice.contains(point)){
+                i++;
+            }
+        }
+        if (i!=blackKing.listOfPossibleBeat().size()) return false;
+
+        //Can I block mate?
+
+        return IsWhiteUnderCheck();
+    }
+
+    public static boolean IsBlackMate(){
+        Pice whiteKing = null;
+        ArrayList<Point> listOfPlaceAttactByBlackPice = new ArrayList<Point>();
+
+        for (Pice pice : ListOfPice) {
+            if (pice.getColor() && pice.pice == Pices.KING) {
+                whiteKing = pice;
+            }
+            if (!pice.getColor()) {
+                listOfPlaceAttactByBlackPice.addAll(pice.listOfPossibleMoves());
+            }
+        }
+        assert whiteKing != null;
+        int i = 0;
+        for (Point point : whiteKing.listOfPossibleMoves()){
+            if (listOfPlaceAttactByBlackPice.contains(point)){
+                i++;
+            }
+        }
+        if (i!=whiteKing.listOfPossibleMoves().size()) return false;
+        i = 0;
+        for (Point point : whiteKing.listOfPossibleBeat()){
+            if (listOfPlaceAttactByBlackPice.contains(point)){
+                i++;
+            }
+        }
+        if (i!=whiteKing.listOfPossibleBeat().size()) return false;
+
+        //Can I block mate?
+
+        return IsBlackUnderCheck();
+    }
+    public static boolean IsWhiteUnderCheck(){
+        ArrayList<Point> listOfAttact = new ArrayList<Point>();
+        Pice blackKing = null;
+        for (Pice pice : ListOfPice){
+            if (pice.color){
+                listOfAttact.addAll(pice.listOfPossibleBeat());
+                listOfAttact.addAll(pice.listOfPossibleMoves());
+            }
+            if(!pice.getColor() && pice.pice==Pices.KING){
+                blackKing = pice;
+            }
+
+        }
+        return listOfAttact.contains(blackKing.position);
+        
+    }
+
+    public static boolean IsBlackUnderCheck(){
+        ArrayList<Point> listOfAttact = new ArrayList<Point>();
+        Pice whiteKing = null;
+        for (Pice pice : ListOfPice){
+            if (!pice.color){
+                listOfAttact.addAll(pice.listOfPossibleBeat());
+                listOfAttact.addAll(pice.listOfPossibleMoves());
+            }
+            if(pice.getColor() && pice.pice==Pices.KING){
+                whiteKing = pice;
+            }
+        }
+        return listOfAttact.contains(whiteKing.position);
+
+    }
     public static Pice GetPice(Point position){
         for (Pice pice : ListOfPice) {
             if (pice.getPosition().equals(position)) {

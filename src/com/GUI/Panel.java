@@ -1,6 +1,5 @@
 package com.GUI;
 
-import com.GUI.Map;
 import com.company.Core;
 import com.company.Pice;
 import com.company.Pices;
@@ -14,7 +13,11 @@ import java.util.ArrayList;
 class Panel extends JPanel implements ActionListener {
 
     JButton[][] buttons;
+    boolean toMove = false, WhoseMove = false;
+    Pice TachedPice;
+    Point pointToMove;
     Map map;
+
 
 
     Panel(){
@@ -94,32 +97,36 @@ class Panel extends JPanel implements ActionListener {
         }
     }
 
-    boolean toMove = false;
-    Pice TachedPice;
-    Point pointToMove;
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        int i=0,j=0;
-
+    Point findButton(ActionEvent e ){
+        Point point = new Point();
         for (int ii = 0; ii<8; ii++){
             for (int jj = 0; jj<8; jj++) {
                 if (e.getSource()==buttons[ii][jj]){
-                        i = ii;
-                        j = jj;
-                    }
+                    point.x = ii;
+                    point.y = jj;
                 }
             }
+        }
+        return point;
+    }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        Point p =findButton(e);
+        int i=p.x,j=p.y;
 
         if (!toMove) {
             TachedPice = Core.GetPice(new Point(i, j));
+            if (TachedPice!=null && TachedPice.getColor()!=WhoseMove){
+                return;
+            }
         }
         else{
             pointToMove = new Point(i, j);
         }
 
-        if(!toMove){
+        if(!toMove ){
             if(TachedPice != null) {
                 //podwświetl liste po prawidłowym kliknęciu
                 LightOn(TachedPice.listOfPossibleMoves());
@@ -140,10 +147,18 @@ class Panel extends JPanel implements ActionListener {
 
                    LightOff(TachedPice.listOfPossibleMoves());
                    LightOff(TachedPice.listOfPossibleBeat());
+
                    buttons[TachedPice.getPosition().x][TachedPice.getPosition().y].setIcon(null);
                    buttons[pointToMove.x][pointToMove.y].setIcon(Map.mapFunction(TachedPice.getColor(),TachedPice.getPice()));
                    TachedPice.move(pointToMove);
                    toMove=false;
+                   WhoseMove=!WhoseMove;
+
+                   System.out.println("Core.IsWhiteUnderCheck"+Core.IsWhiteUnderCheck());
+                   System.out.println("Core.IsBlackUnderCheck()"+Core.IsBlackUnderCheck());
+
+                   System.out.println("Core.IsBlackMate()"+Core.IsBlackMate());
+                   System.out.println("Core.IsWhiteMate()"+Core.IsWhiteMate());
                 }
                else if(TachedPice.listOfPossibleBeat().contains(pointToMove)){
                    //beat
@@ -155,7 +170,16 @@ class Panel extends JPanel implements ActionListener {
                    buttons[pointToMove.x][pointToMove.y].setIcon(Map.mapFunction(TachedPice.getColor(),TachedPice.getPice()));
                    TachedPice.beat(pointToMove);
 
+                   WhoseMove=!WhoseMove;
                    toMove=false;
+
+                   System.out.println("Core.IsWhiteUnderCheck"+Core.IsWhiteUnderCheck());
+                   System.out.println("Core.IsBlackUnderCheck()"+Core.IsBlackUnderCheck());
+
+                   System.out.println("Core.IsBlackMate()"+Core.IsBlackMate());
+                   System.out.println("Core.IsWhiteMate()"+Core.IsWhiteMate());
+
+
                }
                else{
                    //złe kliknięcie zgaszenie wszystkiego

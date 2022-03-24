@@ -12,8 +12,9 @@ public class King extends Pice{
     public ArrayList<Point> listOfPossibleMoves() {
 
         listOfPossibleMoves.clear();
+
         if ( Core.GetPice(new Point(this.position.x+1,this.position.y+1))==null) listOfPossibleMoves.add(new Point(this.position.x+1,this.position.y+1));
-        if ( Core.GetPice(new Point(this.position.x-1,this.position.y-1))==null) listOfPossibleMoves.add(new Point(this.position.x-1,this.position.y-1));
+        if (Core.GetPice(new Point(this.position.x-1,this.position.y-1))==null) listOfPossibleMoves.add(new Point(this.position.x-1,this.position.y-1));
         if ( Core.GetPice(new Point(this.position.x-1,this.position.y+1))==null) listOfPossibleMoves.add(new Point(this.position.x-1,this.position.y+1));
         if ( Core.GetPice(new Point(this.position.x+1,this.position.y-1))==null) listOfPossibleMoves.add(new Point(this.position.x+1,this.position.y-1));
         if ( Core.GetPice(new Point(this.position.x+1,this.position.y))==null) listOfPossibleMoves.add(new Point(this.position.x+1,this.position.y));
@@ -48,7 +49,9 @@ public class King extends Pice{
     @Override
     public ArrayList<Point> listOfPossibleBeat() {
         listOfPossibleBeat.clear();
-        ArrayList<Point> listOfEnemy;
+
+
+
         if (!color && Core.GetBlackPice(new Point(this.position.x+1,this.position.y+1))!=null) listOfPossibleBeat.add(new Point(this.position.x+1,this.position.y+1));
         if (!color && Core.GetBlackPice(new Point(this.position.x-1,this.position.y-1))!=null) listOfPossibleBeat.add(new Point(this.position.x-1,this.position.y-1));
         if (!color && Core.GetBlackPice(new Point(this.position.x-1,this.position.y+1))!=null) listOfPossibleBeat.add(new Point(this.position.x-1,this.position.y+1));
@@ -69,6 +72,5 @@ public class King extends Pice{
 
         return listOfPossibleBeat;
     }
-
 
 }
